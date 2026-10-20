@@ -1,0 +1,11 @@
+{
+  "id": "product-security-review",
+  "name": "Product Security Review",
+  "owner": "Rahul Chamoli",
+  "taskOwner": "Codex/root",
+  "version": "1.0.0",
+  "phase": "validated-skill-release",
+  "publication": "public repository release; LinkedIn draft only",
+  "kind": "portable Agent Skill",
+  "weightTraining": false
+}
