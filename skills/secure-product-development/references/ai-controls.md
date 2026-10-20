@@ -1,6 +1,6 @@
-# Optional AI, RAG and agent review
+# Optional AI, RAG and agent implementation lenses
 
-Load only when the product has these features. Keep ordinary web/API authorization in scope too. Assess implemented boundaries, not a model vendor's reputation.
+Load when changing these features or a model-accessible action. Build the boundaries below into the host implementation and verify the changed path. Keep ordinary web/API authorization in scope too; a model vendor's reputation is not a control.
 
 ## Data and memory isolation
 

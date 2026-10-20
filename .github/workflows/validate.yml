@@ -21,5 +21,7 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Verify committed distribution matches source
         run: |
-          python3 tools/package_skill.py --output "$RUNNER_TEMP/product-security-review.skill"
-          cmp dist/product-security-review.skill "$RUNNER_TEMP/product-security-review.skill"
+          python3 tools/package_skill.py --output "$RUNNER_TEMP/secure-product-development.skill"
+          cmp dist/secure-product-development.skill "$RUNNER_TEMP/secure-product-development.skill"
+      - name: Test synthetic secure implementation
+        run: node --test examples/secure-coding-task/verify.mjs

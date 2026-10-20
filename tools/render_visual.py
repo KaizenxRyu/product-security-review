@@ -5,7 +5,7 @@ import math
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'assets/source'
-OUT = ROOT / 'assets/product-security-review-flow.png'
+OUT = ROOT / 'assets/secure-product-development-flow.png'
 W, H = 1600, 2000
 BLUE, INK, MUTED = '#1758DF', '#101A2C', '#536277'
 canvas = Image.new('RGB', (W, H), '#FAFCFF')
@@ -54,40 +54,40 @@ def step(x, y, number, label):
 
 
 draw.rectangle((90,82,98,114), fill=BLUE)
-text(120,78,'PRODUCT SECURITY REVIEW  /  AGENT SKILL',27,BLUE,'mono')
+text(120,78,'SECURE PRODUCT DEVELOPMENT  /  AGENT SKILL',27,BLUE,'mono')
 text(88,147,'Give your AI a',95,kind='title')
-text(88,254,'security review playbook.',88,kind='title')
-text(93,381,'A structured way to review the product you are building.',37,MUTED)
+text(88,254,'secure coding workflow.',88,kind='title')
+text(93,381,'Apply security while planning, building and testing.',37,MUTED)
 
 # The path is read clockwise: project, equipped agent, checks, report.
 for x,y,r in [(398,720,168),(1193,720,181),(1193,1320,180),(398,1320,168)]:
     halo(x,y,r)
 draw = ImageDraw.Draw(canvas)
-step(113,492,'01','Your project')
+step(113,492,'01','Your feature')
 step(905,492,'02','AI + the skill')
 illustration('desktop_computer',398,740,305)
 illustration('robot',1193,727,298)
 illustration('open_book',1310,824,126)
-text(398,934,'Code + review request',34,MUTED,anchor='mm')
-text(1193,934,'Scope • rules • evidence',34,MUTED,anchor='mm')
+text(398,934,'Requirements + project context',32,MUTED,anchor='mm')
+text(1193,934,'Boundaries • secure defaults',32,MUTED,anchor='mm')
 arrow([(662,730),(907,730)])
 text(785,688,'APPLY',23,BLUE,'mono','mm')
 arrow([(1461,810),(1461,1115),(1390,1170)])
 
-step(901,1066,'03','Trace the risks')
-step(113,1066,'04','A usable report')
+step(901,1066,'03','Build securely')
+step(113,1066,'04','Verify + hand off')
 illustration('shield',1193,1320,310)
 illustration('clipboard',398,1320,306)
 arrow([(906,1316),(664,1316)])
-text(785,1270,'REPORT',23,BLUE,'mono','mm')
+text(785,1270,'VERIFY',23,BLUE,'mono','mm')
 text(1193,1527,'Access · data · inputs',34,MUTED,anchor='mm')
-text(1193,1575,'Config · tools · AI, if present',31,MUTED,anchor='mm')
-text(398,1527,'Findings with source evidence',32,MUTED,anchor='mm')
-text(398,1575,'Risk · fixes · checks still needed',31,MUTED,anchor='mm')
+text(1193,1575,'Controls in the real code path',31,MUTED,anchor='mm')
+text(398,1527,'Working code + relevant tests',32,MUTED,anchor='mm')
+text(398,1575,'Actual results · honest limits',31,MUTED,anchor='mm')
 
 draw.line((94,1685,1506,1685), fill='#D9E3F2', width=2)
-text(93,1722,'Less guesswork. More reviewable evidence.',53,kind='bold')
-text(95,1812,'Instructions, not a scanner or security guarantee.',32,MUTED)
+text(93,1722,'Security belongs in the way we build.',53,kind='bold')
+text(95,1812,'A development workflow, not a security guarantee.',32,MUTED)
 text(95,1856,'No new permissions, tools or model training.',32,MUTED)
 text(94,1943,'RAHUL CHAMOLI  /  KAIZEN-RYU',25,BLUE,'mono')
 text(1505,1943,'MICROSOFT FLUENT ARTWORK · MIT',18,MUTED,'mono','ra')

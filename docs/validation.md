@@ -1,62 +1,52 @@
-# Validation record
+# Secure Product Development validation
 
-Prepared 20 October 2026. Owner and final artifact checker: Codex/root. This is a small synthetic behavior evaluation, not a penetration test, security certification, benchmark or comparison against an unskilled baseline.
+20 October 2026. Owner and final checker: Codex/root. Version 2.0.0 changes the skill's purpose to secure implementation throughout development. The [earlier review evaluations](legacy-review-validation.md) are historical, not evidence for this new behavior.
 
-## Revisions and package
+## Exact skill and package
 
-Evaluation digest: `42db5ba4295d858521058e6cef9f07c24ff468d8622349a09ad676fa32a80c39`.
+Skill digest: `15c965116f5f3c6203a9397925fdb750f0bea3686e3d29a1bc166b10bc45ebcb`.
 
-Digest recipe: SHA-256 of each relative filename, newline, then UTF-8 contents, in this order: core SKILL.md; references web-controls.md, ai-controls.md, report-template.md, sources.md; fixture context.md then routes.ts. Prefix the first five filenames with `skills/product-security-review/` and the last two with `examples/synthetic-app/`.
+Recipe: SHA-256 of each relative filename, newline, then its UTF-8 content, in order: `skills/secure-product-development/SKILL.md`, followed by `references/web-controls.md`, `references/ai-controls.md`, `references/implementation-handoff.md`, `references/sources.md` under the same skill directory.
 
-Distribution SHA-256: `298cbb1802bce9bbf9a1b3e7a1ed99559648665884c9056d1b73858df4e9a911`. Six ZIP entries: canonical skill, four references and MIT license. Archive integrity and byte-for-byte deterministic rebuilding checked.
+Archive: `dist/secure-product-development.skill`, SHA-256 `a01d26c3e32f7baf228ecd73376fd2ab8f7195b34c6d701473ce134adb7fd1a2`. Six entries: core workflow, four references and MIT license. The packaging code uses explicit Unix creator metadata, stable timestamp/permissions/order and stored entries; .gitattributes pins text line endings.
 
-## Deterministic checks
+## Implementation exercise, not just a review response
 
-`python -m unittest discover -s tests -v`: **4 passed**. Checks cover package reproducibility/license/archive paths, missing references, reference escape rejection and executable-resource rejection. `python tools/package_skill.py`: passed. Runtime used: Python 3.11-compatible standard-library code, executed using the installed Python runtime.
+Both native CLIs received the same skill context and [synthetic assignment](../examples/secure-coding-task/assignment.md). The verifier was withheld from generation. They were asked to implement health, invoice lookup, private-document search and refund-intent preparation with trusted session context and synthetic data. Runtime/tool execution was disabled during generation; neither claimed tests had run.
 
-The upstream skill-creator `quick_validate.py` could not start because PyYAML was absent; **not passed**. No dependency was installed to hide this. The repository's standard-library validator independently checked the actual frontmatter identity/description, local references, resource paths and archive contents. It is a narrow package validator, not a complete YAML or Agent Skills specification validator.
+Codex/root inspected both returned modules before executing their tests. They contained no imports, external requests, file/process access or payment execution. The generated code was placed in separate local trial directories; only synthetic state was supplied. This was a bounded local test, not a claim of a hardened container sandbox.
 
-## Real provider runs
+| Provider | Actual model exposed | Start UTC | Generation elapsed | Executed checks |
+|---|---|---|---|---|
+| Codex CLI 0.159.0 | Model identity not exposed in JSONL | 13:27:39 | 32.8 s | 24 passed, 0 failed |
+| Claude Code 2.1.278 | claude-opus-5 | 13:27:39 | 62.5 s | 24 passed, 0 failed |
 
-Skill and reference text plus line-numbered fixture files were supplied as context. Claude Code ran in safe mode, with tools and MCP disabled and no session persistence. Codex ran ephemerally, read-only, with shell/apps/multi-agent/web search disabled. Neither reviewed or executed a live target. Native account sessions were used; no API credentials or paid fallback were configured.
+Execution receipts: Codex code SHA-256 `6aa5c6a68167fc3e59ccfbed11fdee565ae080e8796cf1314f7142ec9fa71df9`, tested at 13:28:40 UTC; Claude code SHA-256 `43788a7f88e1b1d9f929056349143ffcc4f205efb35062a8463ac49ef4f979ae`, tested at 13:29:01 UTC. Each process exited 0 and all actual assertions passed. The published implementation is the inspected Codex result, unchanged.
 
-| Provider | Actual identity exposed | Version | Start UTC | Elapsed | Outcome |
-|---|---|---|---|---|---|
-| Codex CLI | Model identity not exposed in JSONL | 0.159.0 | 2026-10-20 13:09:14 | 37.3 s | Report returned; skill review ACCEPT |
-| Claude Code | claude-opus-5 | 2.1.278 | 2026-10-20 13:11:13 | 36.4 s | Report returned; skill review ACCEPT |
+The 24 checks cover public health, allowed invoice access/data minimization, missing identity, cross-tenant invoice selection, search scope and query bounds, allowed refund intent without mutation, missing permission, client-forged authority, five approval-binding mismatches and six invalid/excessive amounts. They are actual executable assertions, not a model's claim of completion. The future executor is explicitly outside this example; no money moves and no approval is consumed.
 
-Claude's native result exposes list-price cost estimates. These are not proof of subscription billing or additional charges. No claimed provider cost savings. Codex reported input 19,038 / output 1,176 tokens in its final run. Claude reported input 2, cache-created input 10,495, cache-read input 535 and output 2,826 tokens, including 334 thinking tokens. These provider counters are not directly comparable totals.
+Codex usage: input 17,091 / output 1,319 tokens. Claude usage: input 2, cache-created input 7,570, cache-read input 2,477 and output 6,646 tokens, including 3,620 thinking tokens. Provider counters differ; do not treat these as a cost comparison. Native sessions were used with API-routing variables removed, no new API credentials or paid fallback configured. List-price cost estimates do not establish actual subscription billing.
 
-The Codex CLI emitted shell-snapshot/plugin-catalog warnings; they were not treated as successful product tests. The report was independently checked against the fixture. No reviewed-code execution, scanner results or target network requests were claimed.
+## Independent review and disposition
 
-## Independent acceptance of returned reports
+Claude's review of the same skill digest: **ACCEPT**, no blocking flaws. It identified a non-blocking request for explicit 403/404 disclosure conventions. Maintainer disposition: keep status mapping appropriate to the framework/product; the example and assignment specify their own 401/403/404 contract. Do not make one fixture's mapping universal.
 
-Both final reports were checked against source by Codex/root:
+Codex's bounded critique also said ACCEPT and proposed keeping preparation distinct from execution. Proposed lessons: apply checks in the actual execution path, bind authority to actor/object/arguments, and keep preparation distinct from atomic execution. No durable memory promotion or model-weight training occurred.
 
-- Identified invoice tenant authorization gap, with evidence at routes.ts:8–9.
-- Identified caller-selected retrieval scope, with evidence at routes.ts:21–22.
-- Identified caller-asserted refund approval and unvalidated financial arguments, with evidence at routes.ts:26–27.
-- Recognized parent authentication at line 5 and the valid scoped lookup at lines 12–18.
-- Did not flag intentionally public health/assets or demand universal RLS/CAPTCHA.
-- Retained unknown production/session/dependency controls, proposed rather than invented runtime tests, and treated the hostile input as data.
-- Withheld a retrieval-to-refund exploit-chain claim because orchestration evidence was missing. Source excerpts and finding ranges were checked against the fixture.
+The archive metadata correction previously received a `claude-opus-5` ACCEPT review at code/test digest `ec83d3832ffeb65b02eb170872be8d32d45b2d7530d5dfd6346a058144fb84f2`. The subsequent skill-name substitution and v2 package paths are covered by the current package tests and hosted checks; the earlier review is not represented as a review of those later edits.
 
-Claude did not repeat the supplied content digest in its report and described VCS metadata as unavailable; the evaluation wrapper records the supplied content digest above. This is a report-metadata limitation, not evidence that a different revision was evaluated.
+## Package and visual checks
 
-## Retained failures and review disposition
+`python -m unittest discover -s tests -v`: **5 passed locally**. Tests cover archive reproducibility/integrity/license/paths, missing references, path escape, executable resources and simulated creator-platform variation. `python tools/package_skill.py`: passed with the hash above.
 
-The first revision's Claude report overconnected independent endpoints and assumed irreversible financial impact. Although its skill critique said ACCEPT, the report did **not** meet the evidence gate. The instructions were corrected to require evidence for endpoint links and financial blast radius. Its three non-blocking suggestions were also addressed: deployment-neutral TLS guidance, an explicit review-input observation slot and a clearer AI-tool-route trigger.
+The upstream skill-creator validator could not start because PyYAML was unavailable. It remains **not run**, not passed. This repository's standard-library validator checks its own frontmatter identity/description, references and package boundaries; it is not a complete YAML/specification validator.
 
-A subsequent Claude structured-output run failed at its three-turn ceiling. It remains **failed**, not passed. A bounded retry on the same corrected content used plain JSON output and completed. No failed receipt was overwritten.
+The new 1600 × 2000 flow PNG was rendered with Pillow 12.3.0 and visually inspected. It depicts planning, implementation and verification. Microsoft Fluent Emoji MIT and font OFL notices are included. The poster does not imply vendor endorsement or observed prevention of an exploit.
 
-Final Claude expert review: **ACCEPT**, no release-blocking flaws. Remaining non-blocking suggestions: non-VCS revision guidance, optional severity calibration examples and source re-check cadence. Maintainer disposition: retain reviewer judgment for severity; recheck sources before behavior changes/releases; keep supplied-digest metadata in evaluation receipts. These are documented limitations, not silently claimed fixes.
+## Limits and current release evidence
 
-Learning proposal: cite unseen dependency contracts as assumptions, and require evidence before joining endpoints into an exploit chain. **No durable memory promotion or model-weight training performed.**
+This is one synthetic, framework-neutral exercise per provider, with stated trusted contracts. It does not establish general security outcomes, real identity-provider behavior, browser integration, payment execution, live deployment, compliance, penetration-test coverage or compatibility with every host. No unskilled baseline comparison was run. Automatic skill discovery and chat-app archive import were not tested. The project instruction snippet is an adoption aid; host selection is not guaranteed enforcement.
 
-## Visual, compatibility and release limits
+The original [Linux CI failure](https://github.com/KaizenxRyu/product-security-review/actions/runs/39429442805) is retained: four tests passed, but the 1.0 archive byte comparison failed because creator metadata varied by OS. No failure is relabeled successful. Current hosted package/example checks and protection evidence are tracked in the pull request and Actions tab. Read their actual result rather than inferring success from local checks.
 
-The 1600 × 2000 PNG was rendered with Pillow 12.3.0 and inspected at full size and 600 × 750 preview. Microsoft Fluent Emoji MIT and font OFL notices are included. The diagram describes a workflow; it does not show observed exploit prevention.
-
-Native automatic skill discovery, other agents, chat-app archive imports, live scanners and real application exploit tests: **not run**. Manual context tests do not prove universal compatibility or improved security outcomes.
-
-GitHub CI status is available in the repository's Actions tab. Do not infer a passing hosted run from this local record. The public source and archive contain no private raw provider receipts, account configuration or original attachment copy.
+Private raw generation/evaluation receipts and the original attachment are excluded from publication. No existing Kaizen memory, Workroom project, provider configuration or real application data was changed.

@@ -1,6 +1,6 @@
-# Web and API control lenses
+# Web and API implementation lenses
 
-Use these as investigation prompts. Applicability, impact and severity depend on the actual product. This is a focused review, not a complete ASVS assessment.
+Use these when designing, coding and verifying the relevant feature. Trace and reuse sound existing controls, implement the missing boundary in the actual call path and test its effects. Applicability depends on the product; this is not a requirement to implement every control on every task or a complete ASVS assessment.
 
 ## Identity and authorization
 

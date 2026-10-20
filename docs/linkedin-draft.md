@@ -1,23 +1,24 @@
 # LinkedIn draft, not published
 
-I built a small skill for a question I keep coming back to when using AI to build software:
+I built **Secure Product Development**, a skill that helps an AI coding agent think about security while it builds a feature.
 
-“What should we check before calling this ready?”
+It gives the agent a working method:
 
-Product Security Review gives a coding agent a review playbook. It asks the agent to trace access controls and data boundaries, show the source evidence behind a finding, and separate confirmed gaps from things it cannot verify.
+• Understand who can access which data and actions.
+• Put authorization and validation in the actual code path.
+• Check both the allowed path and the requests that should fail.
+• Hand off working code with actual test results and honest limits.
 
-For AI-enabled apps, it also looks at retrieval isolation, untrusted instructions and who actually authorizes a tool action.
+For AI-enabled apps, that also means keeping retrieval inside the right project or tenant, and enforcing tool permissions in the host rather than trusting a model's approval.
 
-The output should be practical: what the risk is, where it comes from, how to fix it and what still needs testing.
+I tried the same skill context with Claude Code and Codex on a synthetic billing-assistant task. Each generated implementation passed 24 checks. That is a small practical example, not a security guarantee or a claim that every agent will follow it correctly.
 
-I started this in Claude, then made the instructions provider-neutral. The same supplied skill context was tried with Claude Code and Codex on a synthetic fixture. That is a small behavior check, not a claim that every agent will use it correctly.
+The instructions, example and tests are available to adapt.
 
-It is not a scanner or a security guarantee. It is a way to ask for a more disciplined review.
+What would you add to an AI agent's everyday development workflow?
 
-Which checks would you add?
+Repository: https://github.com/KaizenxRyu/secure-product-development
 
-Repository: https://github.com/KaizenxRyu/product-security-review
+#AgentSkills #SecureDevelopment #AISecurity
 
-#AISecurity #AgentSkills #SecureDevelopment
-
-Attach: assets/product-security-review-flow.png. Confirm the public repository is available before sharing this draft. Do not claim measured improvement without a controlled comparison.
+Attach assets/secure-product-development-flow.png. Confirm the current public release and hosted checks before sharing. No LinkedIn publication is authorized by this draft.

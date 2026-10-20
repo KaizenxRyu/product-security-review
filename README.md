@@ -1,82 +1,87 @@
-# Product Security Review
+# Secure Product Development
 
-A security review playbook for coding agents, created by **Rahul Chamoli**.
+**A secure coding workflow for AI agents, created by Rahul Chamoli.**
 
-Give your agent a repeatable way to inspect a web app, API or AI-enabled product: establish scope, trace trust boundaries, separate confirmed gaps from unknowns, and produce findings an engineer can verify.
+Use security as part of how an agent plans, writes and verifies product code. The deliverable is an implemented feature with relevant checks and honest limits. The skill guides the work throughout development; it does not require a separate audit report for every task.
 
-[Download the skill](dist/product-security-review.skill) · [Read the instructions](skills/product-security-review/SKILL.md) · [Validation evidence](docs/validation.md)
+[Download the skill](dist/secure-product-development.skill) · [Read the workflow](skills/secure-product-development/SKILL.md) · [Validation evidence](docs/validation.md)
 
-![Illustrated flow: project code and a review request enter an AI agent equipped with the skill. The agent traces risks and produces source-backed findings, priorities, fixes and checks still needed.](assets/product-security-review-flow.png)
+![Illustrated flow: requirements and project context enter an AI agent equipped with Secure Product Development. The agent builds controls into the real code path, then verifies the implementation and hands off code, test results and limits.](assets/secure-product-development-flow.png)
 
-## What it adds
+## The working method
 
-- **A review method:** trace routes, middleware, services and data access before raising a finding.
-- **Context-sensitive controls:** authentication, object/tenant authorization, inputs, configuration and integrations. Add the AI profile for RAG, memory, agents and MCP tools.
-- **Evidence discipline:** relative file paths, line numbers, short source excerpts, confidence and impact assumptions.
-- **A useful handoff:** PASS / GAP / UNKNOWN / N/A, prioritized fixes, proposed regression checks and explicit work not run.
+1. **Understand:** feature contract, existing architecture, identity, data and action boundaries.
+2. **Implement:** trusted server identity, scoped data access, validated inputs and business actions, safe secret handling and appropriate framework controls.
+3. **Verify:** the allowed path and relevant unauthorized, cross-tenant, tampered-input and retry paths.
+4. **Hand off:** working code, actual checks and results, unknowns and the next action.
 
-It does not add a scanner, tools, permissions, network access or model training. It cannot certify security, prove compliance or replace a specialist review.
+For AI-enabled features, the host enforces tool permissions and approvals; retrieval/memory stays inside the permitted project or tenant. A model's decision or a request-body `approved` flag cannot grant authority.
 
-## Use it
+The work scales to the change. A copy or styling edit does not trigger an unrelated security redesign. RLS, CAPTCHA, specific headers and named scanners are not universal requirements.
 
-Example request:
+## Example: while building an invoice feature
 
-> Use product-security-review to review this repository's invoice and assistant APIs. Inspect source only. Trace shared middleware and tenant boundaries. Report findings with evidence, prioritized fixes, unknowns and regression tests to run. Do not change files or contact external systems.
+An agent should put the trusted tenant check in the data-access path as it implements the feature, then test that another tenant's invoice is inaccessible. A note saying “add authorization later” is not the implementation.
 
-Use the skill on repositories and environments you are authorized to review. Fixes and executable checks require their own authorized scope.
+Try the complete [synthetic assignment](examples/secure-coding-task/assignment.md), [implementation](examples/secure-coding-task/implementation.mjs) and [24 executable checks](examples/secure-coding-task/verify.mjs):
+
+```sh
+node --test examples/secure-coding-task/verify.mjs
+```
+
+The example prepares a refund intent only. It never transfers money. A real executor would need its own atomic validation, approval consumption and idempotency. It is a framework-neutral learning example, not an application to deploy.
+
+## Install and use
 
 ### Claude Code
 
-Copy `skills/product-security-review/` into your target repository at:
-
-```text
-.claude/skills/product-security-review/
-  SKILL.md
-  references/
-```
-
-Then ask Claude Code to use it, or invoke `/product-security-review` with the review scope. Follow the current [Claude Code skills documentation](https://code.claude.com/docs/en/skills) for discovery and invocation details.
+Copy `skills/secure-product-development/` into your project's `.claude/skills/secure-product-development/`. Ask Claude Code to use it or invoke `/secure-product-development`. See the [official skill documentation](https://code.claude.com/docs/en/skills).
 
 ### Codex
 
-Copy the same canonical folder into your target repository at:
+Copy the same folder into `.agents/skills/secure-product-development/` in your project. Ask Codex to use `$secure-product-development`. See the [official skills documentation](https://learn.chatgpt.com/docs/build-skills).
 
-```text
-.agents/skills/product-security-review/
-  SKILL.md
-  references/
-```
+### Make it part of normal project work
 
-Then ask Codex to use `$product-security-review`. See the official [Codex skills documentation](https://learn.chatgpt.com/docs/build-skills).
+Add [this short instruction](integrations/project-instruction.md) to the project's AGENTS.md, CLAUDE.md or host equivalent after installation. Merge with existing guidance; do not replace the file. Example request:
 
-### Other agents and the `.skill` archive
+> Use secure-product-development while implementing this feature. Follow our existing framework and architecture, put authorization and validation on the actual execution path, and verify the relevant allowed and rejection paths. Explain the checks that really ran and what remains unknown.
 
-The package is a ZIP-compatible archive containing `product-security-review/SKILL.md`, its references and the license. Use an import facility only if your host supports that format; otherwise extract and copy the folder to the host's documented skill location. Do not rename the folder or flatten its references.
+Hosts differ in automatic selection and permissions. **Skills are guidance, not enforcement.** Verify that the agent loads the skill, and keep real enforcement in tests, CI, permissions and runtime controls. This repository does not edit global AI configuration or grant new tools, access or spending authority.
 
-The canonical structure follows the [Agent Skills specification](https://agentskills.io/specification). Hosts differ in discovery, tools and permissions. Manual-context behavior was checked with native Claude Code and Codex CLIs; automatic discovery, chat-app imports and other hosts are **not tested**. No global provider configuration is changed by this repository.
+### Other agents
 
-## Try the review fixture
+The canonical folder follows the [Agent Skills specification](https://agentskills.io/specification). The `.skill` download is ZIP-compatible and contains the workflow, four references and MIT license. Import it only in a host supporting that format; otherwise extract and use its documented skill location. Preserve references and license when redistributing. Do not assume universal host support.
 
-Ask your agent to review [the synthetic source](examples/synthetic-app/routes.ts) using [its explicit context](examples/synthetic-app/context.md). It is an inert, deliberately flawed excerpt, not an app to deploy. The fixture includes authorization gaps, valid controls and hostile retrieved text to test evidence handling. It is not a security benchmark.
+## What was tested
 
-## Maintain and package
+The same workflow context was supplied to native Claude Code and Codex CLIs for a synthetic implementation task. Both produced code, then each implementation passed **24 held-out checks** after source inspection. Five package tests also passed locally. The skill instructions received an independent Claude review. See [the detailed record and limitations](docs/validation.md).
 
-Python 3.11+; packaging and its tests use only the standard library:
+This is a small behavior check, not proof of a security benefit, universal compatibility or production readiness. No baseline comparison, automatic discovery test, live payment/auth deployment or penetration test was performed.
+
+## Build and maintain
+
+Python 3.11+ for the package, Node.js 20+ for the synthetic example. Neither needs third-party packages:
 
 ```sh
 python -m unittest discover -s tests -v
 python tools/package_skill.py
+node --test examples/secure-coding-task/verify.mjs
 ```
 
-The archive is deterministic and includes only the skill resources and MIT license. The poster is separate from the skill's model context. To rebuild it, install the optional pinned visual dependency in an isolated environment, then run:
+Optional poster rebuild:
 
 ```sh
 python -m pip install -r tools/requirements-visual.txt
 python tools/render_visual.py
 ```
 
-Read [the runbook](docs/runbook.md), [changelog](CHANGELOG.md) and [design decision](decisions/0001-portable-evidence-led-skill.md) before contributing. Keep changes small and preserve truthful limits and evidence.
+The archive contains only instructions, references and license. The poster and its fonts are separate from model context. Read [the runbook](docs/runbook.md), [changelog](CHANGELOG.md) and [the implementation decision](decisions/0002-secure-implementation-workflow.md) before changing the skill.
 
-## License and credits
+## Version history and limits
 
-Original instructions and code: [MIT](LICENSE). Microsoft Fluent Emoji illustrations and bundled fonts keep their own [license notices](assets/THIRD_PARTY_NOTICES.md). Independent community work; no vendor endorsement is implied.
+Version 2 changes the original Product Security Review skill into an implementation workflow. Original evaluations remain historical; they do not validate this new behavior. The current record includes real code generation and executable checks. Prior distribution and review material are deprecated; use the `secure-product-development` package and folder.
+
+The skill does not certify security, compliance or deployment readiness. It adds no scanner, permissions, tools, network access or model-weight changes.
+
+Original instructions and code: [MIT](LICENSE). Microsoft Fluent Emoji artwork and bundled fonts retain their [license notices](assets/THIRD_PARTY_NOTICES.md). No vendor endorsement is implied.
