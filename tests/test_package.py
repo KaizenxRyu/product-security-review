@@ -2,6 +2,7 @@ from pathlib import Path
 import importlib.util
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,7 +19,7 @@ class PackageTests(unittest.TestCase):
         self.skill = self.root / packager.NAME
         self.skill.mkdir()
         self.entry = self.skill / 'SKILL.md'
-        self.entry.write_text('---\nname: product-security-review\ndescription: A review\n---\n', encoding='utf-8')
+        self.entry.write_text('---\nname: secure-product-development\ndescription: Secure coding\n---\n', encoding='utf-8')
         self.license = self.root / 'LICENSE'
         self.license.write_text('Test license', encoding='utf-8')
 
@@ -51,6 +52,24 @@ class PackageTests(unittest.TestCase):
         (self.skill / 'run.ps1').write_text('throw', encoding='utf-8')
         with self.assertRaisesRegex(ValueError, 'Only reviewed Markdown'):
             packager.validate(self.skill)
+
+    def test_creator_platform_does_not_change_archive(self):
+        original = zipfile.ZipInfo
+        outputs = []
+        for platform in (0, 3):
+            class PlatformZipInfo(original):
+                def __init__(self, *args, **kwargs):
+                    super().__init__(*args, **kwargs)
+                    self.create_system = platform
+            output = self.root / f'platform-{platform}.skill'
+            with mock.patch.object(packager.zipfile, 'ZipInfo', PlatformZipInfo):
+                packager.build(self.skill, output, self.license)
+            outputs.append(output.read_bytes())
+            with zipfile.ZipFile(output) as archive:
+                for entry in archive.infolist():
+                    self.assertEqual(entry.create_system, 3)
+                    self.assertEqual(entry.compress_type, zipfile.ZIP_STORED)
+        self.assertEqual(outputs[0], outputs[1])
 
 
 if __name__ == '__main__':
