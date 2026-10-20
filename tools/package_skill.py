@@ -7,7 +7,7 @@ import re
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = 'product-security-review'
+NAME = 'secure-product-development'
 
 
 def validate(skill: Path) -> list[Path]:
@@ -16,7 +16,7 @@ def validate(skill: Path) -> list[Path]:
     if not text.startswith('---\n') or '\n---\n' not in text[4:]:
         raise ValueError('SKILL.md requires YAML frontmatter')
     front = text.split('---', 2)[1]
-    if not re.search(r'^name: product-security-review$', front, re.M):
+    if not re.search(r'^name: ' + re.escape(NAME) + r'$', front, re.M):
         raise ValueError('Skill name must match its directory')
     if not re.search(r'^description: .+', front, re.M):
         raise ValueError('Missing description')
