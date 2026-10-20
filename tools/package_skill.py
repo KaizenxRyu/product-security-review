@@ -41,10 +41,13 @@ def build(skill: Path, output: Path, license_path: Path) -> dict:
     output.parent.mkdir(parents=True, exist_ok=True)
     entries = [(f'{NAME}/{p.relative_to(skill).as_posix()}', p.read_bytes()) for p in files]
     entries.append((f'{NAME}/LICENSE', license_path.read_bytes()))
-    with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    # Stored entries avoid zlib-version variation. Explicit Unix metadata avoids
+    # ZipInfo's platform-dependent creator byte in the central directory.
+    with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_STORED) as archive:
         for name, content in sorted(entries):
             info = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
-            info.compress_type = zipfile.ZIP_DEFLATED
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_STORED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, content)
     return {'file': output.name, 'entries': len(entries),
